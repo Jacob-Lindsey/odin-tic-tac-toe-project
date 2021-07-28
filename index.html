@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tic-Tac-Toe</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Teko&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header id="nav header">
+      <div class="home nav-link">Home</div>
+      <div class="new-game nav-link" id="new-game-button">New Game</div>
+      <div class="login nav-link">Login</div>
+    </header>
+
+    <!-- NEW GAME MODAL -->
+
+    <div id="modal-overlay" class="modal-overlay hide"></div>
+    <div id="new-game-modal" class="modal">
+      <div class="modal-container">
+        <div class="modal-form">
+          <div class="user-name-container">
+            <input
+              type="text"
+              class="user-name"
+              id="playerOne"
+              placeholder="Player 1 - Name"
+            />
+            <input
+            type="text"
+            class="user-name"
+            id="playerTwo"
+            placeholder="Player 2 - Name"
+            />
+            <div id="choose-ai-opponent" class="replace">
+                <input
+                    type="radio"
+                    id="ai-1"
+                    class="opponent character"
+                    name="opponentCharacter"
+                    value="char1"
+                />
+                <label for="ai-1">AI-1</label>
+                <input
+                    type="radio"
+                    id="ai-2"
+                    class="opponent character"
+                    name="opponentCharacter"
+                    value="char1"
+                />
+                <label for="ai-2">AI-2</label>
+                <input
+                    type="radio"
+                    id="ai-3"
+                    class="opponent character"
+                    name="opponentCharacter"
+                    value="char1"
+                />
+                <label for="ai-3">AI-3</label>
+            </div>
+            
+          </div>
+
+          <div class="switch-field">
+            <input
+              type="radio"
+              id="radio-one"
+              name="opponentChoice"
+              value="player"
+              checked
+            />
+            <label for="radio-one">vs. Player</label>
+            <input
+              type="radio"
+              id="radio-two"
+              name="opponentChoice"
+              value="ai"
+            />
+            <label for="radio-two">vs. AI</label>
+          </div>
+        </div>
+
+        <span class="close">&times;</span>
+      </div>
+      <div class="submit">PLAY</div>
+    </div>
+
+    <!-- LOGIN MODAL -->
+    
+    <div id="login-overlay" class="login-overlay hide"></div>
+      <div id="login" class="login-card hide">
+        <span class="close-button topright">&times;</span>
+        <div class="login-body">
+          <div class="login-title">
+            <h2>Login</h2>
+          </div>
+          <form class="form">
+            <label for="user-name">&nbsp;USERNAME</label>
+            <input
+              id="user-name"
+              class="form-content"
+              type="text"
+              name="user-name"
+              autocomplete="on"
+              required
+            />
+            <div class="form-border"></div>
+            <label for="user-avatar">AVATAR URL</label>
+            <input
+              id="user-avatar"
+              class="form-content"
+              type="text"
+              name="user-avatar"
+            />
+            <div class="form-border"></div>
+            <input
+              id="submit-btn"
+              type="submit"
+              name="user-submit"
+              value="LOGIN"
+            />
+          </form>
+        </div>
+      </div>
+    </div>
+    <div id="main">
+      <div class="game-ui left"></div>
+      <div class="container" id="game-board">
+        <div class="cell t1" id="t1"><span class="cell-content" id="p1"></span></div>
+        <div class="cell t2" id="t2"><span class="cell-content" id="p2"></span></div>
+        <div class="cell t3" id="t3"><span class="cell-content" id="p3"></span></div>
+        <div class="cell m1" id="m1"><span class="cell-content" id="p4"></span></div>
+        <div class="cell m2" id="m2"><span class="cell-content" id="p5"></span></div>
+        <div class="cell m3" id="m3"><span class="cell-content" id="p6"></span></div>
+        <div class="cell b1" id="b1"><span class="cell-content" id="p7"></span></div>
+        <div class="cell b2" id="b2"><span class="cell-content" id="p8"></span></div>
+        <div class="cell b3" id="b3"><span class="cell-content" id="p9"></span></div>
+      </div>
+      <div class="game-ui right"></div>
+    </div>
+
+    <script src="js/app.js"></script>
+  </body>
+</html>
