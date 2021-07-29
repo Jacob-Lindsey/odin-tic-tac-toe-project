@@ -404,6 +404,7 @@ header {
   font-size: 28px;
   font-weight: bold;
   margin-right: 2%;
+  height: 30px;
 }
 
 .close:hover,
