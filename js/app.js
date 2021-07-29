@@ -1,9 +1,4 @@
-const cells = document.querySelectorAll(".cell");
-for (let i = 0; i < cells.length; i++) {
-  cells[i].addEventListener("click", (event) => {
-    console.log(event.target.id);
-  });
-}
+const cells = document.getElementsByClassName("cell-content");
 
 //------------------------------------
 // User storage array + Local Storage
@@ -27,6 +22,7 @@ const loginOverlay = document.getElementById("login-overlay");
 const loginCard = document.getElementById("login");
 const loginClose = document.querySelector(".close-button");
 const modalOverlay = document.getElementById("modal-overlay");
+const boardFill = ["X", "X", "O", "X", "O", "X", "O", "X", "O"];
 
 //------------------------------------------------
 // Returns Functionality Methods For UI Components
@@ -40,24 +36,31 @@ const displayController = (function () {
     /* playerTwoInput.classList.remove("hide"); */
     userOpponentChoice = "pvp";
     /* aiCharacters.classList.add("hide"); */
-    playerTwoInput.style.visibility = 'visible';
-    aiCharacters.style.visibility = 'hidden';
+    playerTwoInput.style.visibility = "visible";
+    aiCharacters.style.visibility = "hidden";
   }
   function toggle_AI() {
     /* playerTwoInput.classList.add("hide"); */
     userOpponentChoice = "ai";
     /* aiCharacters.classList.remove("hide"); */
-    playerTwoInput.style.visibility = 'hidden';
-    aiCharacters.style.visibility = 'visible';
+    playerTwoInput.style.visibility = "hidden";
+    aiCharacters.style.visibility = "visible";
   }
   function openMenu() {
     modal.style.display = "flex";
+  }
+
+  function boardAnimation(arr, index) {
+    if (index === arr.length) return;
+    cells[index].textContent = arr[index];
+    setTimeout(boardAnimation, 100, arr, index + 1);
   }
   return {
     closeMenu: closeMenu,
     toggle_PVP: toggle_PVP,
     toggle_AI: toggle_AI,
     openMenu: openMenu,
+    boardAnimation: boardAnimation,
   };
 })();
 
@@ -109,22 +112,106 @@ modalClose.addEventListener("click", function () {
   modalOverlay.classList.add("hide");
 });
 
+window.addEventListener("keydown", function (event) {
+  if (event.key == "p") {
+    playGame();
+  }
+});
+window.addEventListener("keydown", function (event) {
+  if (event.key == "c") {
+    clearBoard();
+  }
+});
+
+function wait(ms) {
+  const start = new Date().getTime();
+  let end = start;
+  while (end < start + ms) {
+    end = new Date().getTime();
+  }
+}
+
+//--------------------
+// Pre-Game Animation
+//--------------------
+
+const preGameAnimations = (function () {
+  const cells = document.getElementsByClassName("cell");
+  const requestAnimationFrame = window.requestAnimationFrame;
+  let delay = 0;
+  const randNums = generateRandomNumbers();
+  function changeColor() {
+    for (let i = 0; i < randNums.length; i++) {
+      delay++;
+      if (delay > 167) {
+        cells[randNums[i]].style.backgroundColor = getRandomColor();
+        delay = 0;
+      }
+    }
+
+    requestAnimationFrame(changeColor);
+  }
+
+  function getRandomColor() {
+    let r = Math.floor(Math.random() * 256);
+    let g = Math.floor(Math.random() * 256);
+    let b = Math.floor(Math.random() * 256);
+
+    let hexR = r.toString(16);
+    let hexG = g.toString(16);
+    let hexB = b.toString(16);
+
+    if (hexR.length == 1) {
+      hexR = "0" + hexR;
+    }
+    if (hexG.length == 1) {
+      hexG = "0" + hexG;
+    }
+    if (hexB.length == 1) {
+      hexB = "0" + hexB;
+    }
+
+    const hexColor = "#" + hexR + hexG + hexB;
+    return hexColor.toUpperCase();
+  }
+
+  function generateRandomNumbers() {
+    let randomNumbers = [];
+    for (let i = 0; i < 50; i++) {
+      let r = Math.floor(Math.random() * 9);
+      randomNumbers.push(r);
+    }
+    return randomNumbers;
+  }
+
+  return {
+    changeColor: changeColor,
+    randNums: randNums,
+    cells: cells,
+  };
+})();
+
 //-----------------
 // Play Game
 //-----------------
-function playGame() {}
+function playGame() {
+  gameSetup();
+}
 
 //-----------------
 // Game Setup
 //-----------------
 function gameSetup() {
-  const cells = document.getElementsByClassName("cell-content");
-  const boardFill = ["X", "X", "O", "X", "O", "X", "O", "X", "O"];
-  for (let i = 0; i < cells.length; i++) {
-      cells[i].textContent = boardFill[i];
-  }
+  preGameAnimations.changeColor();
+
+  /* displayController.boardAnimation(boardFill, 0); */
 }
 
+function clearBoard() {
+  for (let i = 0; i < cells.length; i++) {
+    cells[i].textContent = "";
+  }
+}
 //-----------------
 // New Game
 //-----------------
