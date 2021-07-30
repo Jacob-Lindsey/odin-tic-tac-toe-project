@@ -22,6 +22,7 @@ const modalClose = document.querySelector(".close");
 const modalOverlay = document.getElementById("modal-overlay");
 const newGameButton = document.getElementById("new-game-button");
 const playerTwoInput = document.getElementById("playerTwo");
+const replayButton = document.querySelector(".replay");
 
 //----------------------------------------
 // Game Board Element Specific References
@@ -127,10 +128,8 @@ window.addEventListener("keydown", function (event) {
     playGame();
   }
 });
-window.addEventListener("keydown", function (event) {
-  if (event.key == "c") {
-    clearBoard();
-  }
+replayButton.addEventListener("click", function (event) {
+  playGame();
 });
 
 //---------------------
@@ -205,11 +204,11 @@ function playGame() {
 function gameSetup() {
   gameLogicController.onLoad();
   window.addEventListener("click", function (event) {
-    if (event.target.classList.contains('cell-content')) {
+    if (event.target.classList.contains("cell-content")) {
       console.log(event.target.id);
       gameLogicController.squareClicked(event.target.id);
     }
-  })
+  });
   /* preGameAnimations.changeColor(); */
 }
 
@@ -269,13 +268,18 @@ const gameLogicController = (function () {
   function endTurn() {
     if (board.isEndGame()) {
       if (board.isWin()) {
-        alert(
-          "GAME OVER!!! player " +
-            currentPlayer +
-            " WINS!!! - hope you had fun :)"
-        );
+        setTimeout(function () {
+          alert("Game over. Would you like to play again?");
+          window.location = window.location;
+          gameSetup();
+        }, 10);
       } else {
-        alert("GAME OVER!!! No more spaces left :( Hope you had fun ;)");
+        setTimeout(function () {
+          alert(
+            "Game Over. No More Spaces Left. Would you like to play again?");
+          window.location = window.location;
+          gameSetup();
+        }, 10);
       }
     } else {
       currentPlayer = otherPlayer();
@@ -296,7 +300,7 @@ const gameLogicController = (function () {
     for (let i = 0; i < 9; i++) {
       const squareValue = board.getSquares()[i].getValue();
       const text = squareValue || "-";
-      document.getElementById('' + i).innerHTML = text;
+      document.getElementById("" + i).innerHTML = text;
     }
   }
 
@@ -309,9 +313,10 @@ const gameLogicController = (function () {
     }
 
     function decideBestMove() {
+      //----------------------------------------------------------
       // Play a win move if there is one, else block the opponent
       // if possible, else play according to sequence.
-
+      //-----------------------------------------------------------
       const availablePositions = board.getAvailablePositions();
 
       const winMoves = availablePositions.filter(function (pos) {
@@ -347,8 +352,9 @@ const gameLogicController = (function () {
   })();
 
   const Board = (function () {
+    //--------
     // Static
-
+    //--------
     const STRAIGHTS = [
       [0, 1, 2],
       [3, 4, 5],
@@ -368,7 +374,9 @@ const gameLogicController = (function () {
       return arr;
     }
 
+    //-------------
     // Constructor
+    //-------------
     const constr = function (squares) {
       const mySquares = squares || makeEmptySquares();
 
@@ -424,7 +432,9 @@ const gameLogicController = (function () {
         return arr;
       }
 
+      //--------
       // Public
+      //--------
       this.squareAvailable = squareAvailable;
       this.isWin = isWin;
       this.isEndGame = isEndGame;
@@ -463,6 +473,7 @@ const gameLogicController = (function () {
   return {
     onLoad: onLoad,
     squareClicked: squareClicked,
+    board: board,
   };
 })();
 
@@ -542,7 +553,7 @@ buildUI(pantzzzz, cpu);
 //---------------------------
 //---------------------------
 //  Public-Scoped Functions:
-//    -- displayController --
+//    ---displayController---
 //         closeLogin
 //         openLogin
 //         closeMenu
@@ -550,23 +561,24 @@ buildUI(pantzzzz, cpu);
 //         toggle_PVP
 //         toggle_AI
 //         boardAnimation
-//    -- preGameAnimations --
+//    ---preGameAnimations---
 //         changeColor
-//    -- gameLogicController --
+//     --gameLogicController--
 //         onLoad
 //         squareClicked
+//    ------constr------
+//         getSquares
 //---------------------------
 //---------------------------
-//  Public-Scoped constiables:
-//    -- preGameAnimations --
+//  Public-Scoped Variables:
+//    ---preGameAnimations---
 //         randNums
 //         cells
-//    -- displayController --
+//    ---displayController---
 //         squareAvailable
 //         isWin
 //         isEndGame
 //         setSquare
 //         clone
 //         getAvailablePositions
-//         getSquares
 //---------------------------
