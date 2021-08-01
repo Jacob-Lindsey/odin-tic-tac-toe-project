@@ -192,6 +192,10 @@ header {
   top: 22.5%;
 }
 
+#choose-ai-opponent > label {
+  cursor: pointer;  
+}
+
 #choose-ai-opponent label:first-of-type {
   color: #a6dc86bd;
 }
@@ -423,6 +427,7 @@ header {
   height: 3rem;
   line-height: 45px;
   text-align: center;
+  cursor: pointer;
   transition: all 60ms ease-in-out;
 }
 
@@ -544,8 +549,12 @@ header {
 .player-avatar {
   flex: 2;
   align-self: center;
-  margin-bottom: 25%;
+  margin-bottom: 20%;
   border-radius: 50%;
+  width: 65%;
+  height: 40%;
+  border: 5px solid black;
+  opacity: 0.7;
 }
 
 .player-record {

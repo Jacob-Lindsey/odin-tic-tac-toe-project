@@ -1,8 +1,4 @@
-//------------------------------------
-// User storage array + Local Storage
-//------------------------------------
-const users = [];
-window.localStorage.setItem("users", JSON.stringify(users));
+
 
 //-----------------------
 // UI Element References
@@ -268,15 +264,30 @@ const gameLogicController = (function () {
   function endTurn() {
     if (board.isEndGame()) {
       if (board.isWin()) {
-        setTimeout(function () {
-          alert("Game over. Would you like to play again?");
-          window.location = window.location;
-          gameSetup();
-        }, 10);
+        if (currentPlayer === aiPlayer) {
+          updateRecord(1,Human);
+          updateRecord(0,CPU);
+          setTimeout(function () {
+            alert("You lost. Would you like to play again?");
+            window.location = window.location;
+            gameSetup();
+          }, 10);
+        } else {
+          updateRecord(0,Human);
+          updateRecord(1,CPU);
+          setTimeout(function () {
+            alert("You won. Would you like to play again?");
+            window.location = window.location;
+            gameSetup();
+          }, 10);
+        }
       } else {
+        updateRecord(2,Human);
+        updateRecord(2,CPU);
         setTimeout(function () {
           alert(
-            "Game Over. No More Spaces Left. Would you like to play again?");
+            "Game Over. No More Spaces Left. Would you like to play again?"
+          );
           window.location = window.location;
           gameSetup();
         }, 10);
@@ -474,6 +485,8 @@ const gameLogicController = (function () {
     onLoad: onLoad,
     squareClicked: squareClicked,
     board: board,
+    aiPlaying: aiPlaying,
+    aiPlayer: aiPlayer,
   };
 })();
 
@@ -502,9 +515,10 @@ function buildUI(playerOne, playerTwo) {
     const playerName = document.createElement("div");
     const playerAvatar = document.createElement("img");
     const playerRecord = document.createElement("div");
+    const recordArray = JSON.parse(window.localStorage.getItem(`${player.userName}`));
     playerName.textContent = player.userName;
     playerRecord.textContent =
-      player.record[0] + " - " + player.record[1] + " - " + player.record[2];
+      recordArray[0] + " - " + recordArray[1] + " - " + recordArray[2];
     playerContainer.classList.add("player-container");
     playerName.classList.add("player-name");
     if (side == "left") {
@@ -527,26 +541,58 @@ function buildUI(playerOne, playerTwo) {
 //---------------------------
 // Returns A New User Object
 //---------------------------
-function createUser(userName, avatar) {
+function createUser(userName, avatar, record) {
   return {
     userName: userName,
     avatar: avatar,
-    record: [0, 0, 0],
-    addUserToDB() {
-      let user = {
-        userName,
-        avatar,
-        record: [0, 0, 0],
-      };
-      users.push(user);
-    },
+    record: record,
   };
 }
 
-const pantzzzz = createUser("pantzzzz", "https://i.pravatar.cc/120");
-const cpu = createUser("CPU", "https://i.pravatar.cc/121");
+//------------------------------------
+// User storage array + Local Storage
+//------------------------------------
+function updateRecord(result,player) {
+  let json = window.localStorage.getItem(`${player.userName}`);
+  let record;
+  if (json) {
+    record = JSON.parse(json);
+    console.log(record[0])
+    record[result] += 1;
+  } else {
+    record = [0, 0, 0];
+  }
+  player.record = record;
+  window.localStorage.setItem(player.userName, JSON.stringify(record));
+}
 
-buildUI(pantzzzz, cpu);
+function setInitialRecord(player) {
+  let json = window.localStorage.getItem(`${player.userName}`);
+  let record;
+  if (json) {
+    record = JSON.parse(json);
+  } else {
+    record = [0, 0, 0];
+  }  
+  player.record = record;
+  
+ 
+
+  window.localStorage.setItem(`${player.userName}`, JSON.stringify(record));
+}
+
+
+let initRecord = [0,0,0];
+const Human = createUser("Human", "/images/avatar.png", '');
+const CPU = createUser("CPU", "/images/avatar.png", '');
+
+setInitialRecord(Human);
+setInitialRecord(CPU);
+
+
+
+
+buildUI(Human, CPU);
 
 //---------------------------
 //  Module References
