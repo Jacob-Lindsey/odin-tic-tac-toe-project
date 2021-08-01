@@ -1,5 +1,3 @@
-
-
 //-----------------------
 // UI Element References
 //-----------------------
@@ -17,8 +15,10 @@ const modal = document.getElementById("new-game-modal");
 const modalClose = document.querySelector(".close");
 const modalOverlay = document.getElementById("modal-overlay");
 const newGameButton = document.getElementById("new-game-button");
+const playerOneInput = document.getElementById("playerOne");
 const playerTwoInput = document.getElementById("playerTwo");
 const replayButton = document.querySelector(".replay");
+const applyButton = document.querySelector(".submit");
 
 //----------------------------------------
 // Game Board Element Specific References
@@ -50,17 +50,38 @@ const displayController = (function () {
     userOpponentChoice = "pvp";
     playerTwoInput.style.visibility = "visible";
     aiCharacters.style.visibility = "hidden";
+    gameLogicController.aiPlaying = false;
   }
   function toggle_AI() {
     userOpponentChoice = "ai";
     playerTwoInput.style.visibility = "hidden";
     aiCharacters.style.visibility = "visible";
+    gameLogicController.aiPlaying = true;
   }
   function boardAnimation(arr, index) {
     if (index === arr.length) return;
     cells[index].textContent = arr[index];
     setTimeout(boardAnimation, 100, arr, index + 1);
   }
+  function registerUser() {
+    if (!gameLogicController.aiPlaying) {
+      if (playerTwoInput.value != "") {
+        const playerTwo = playerTwoInput.value;
+        createUser(`${playerTwo}`, "/images/avatar.png", "");
+        setInitialRecord(`${playerTwo}`);
+      } else {
+        alert("Please enter Player 2's name.");
+      }
+    }
+    if (playerOneInput.value != "") {
+      const playerOne = playerOneInput.value;
+      createUser(`${playerOne}`, "/images/avatar.png", "");
+      setInitialRecord(`${playerOne}`);
+    } else {
+      alert("Please enter Player 1's name.");
+    }
+  }
+
   return {
     closeMenu: closeMenu,
     openMenu: openMenu,
@@ -69,6 +90,7 @@ const displayController = (function () {
     toggle_PVP: toggle_PVP,
     toggle_AI: toggle_AI,
     boardAnimation: boardAnimation,
+    registerUser: registerUser,
   };
 })();
 
@@ -124,8 +146,11 @@ window.addEventListener("keydown", function (event) {
     playGame();
   }
 });
-replayButton.addEventListener("click", function (event) {
+replayButton.addEventListener("click", function () {
   playGame();
+});
+applyButton.addEventListener("click", function () {
+  displayController.registerUser();
 });
 
 //---------------------
@@ -135,9 +160,19 @@ const preGameAnimations = (function () {
   const cells = document.getElementsByClassName("cell");
   const requestAnimationFrame = window.requestAnimationFrame;
   let delay = 0;
+  let flag = true;
   const randNums = generateRandomNumbers();
   function changeColor() {
+    replayButton.addEventListener('click', () => {
+      flag = false;
+    })
     for (let i = 0; i < randNums.length; i++) {
+      if (flag == false) {
+        for (let i = 0; i < cells.length; i++) {
+          cells[i].style.backgroundColor = "rgb(48,48,48)";
+        }
+        return;
+      }
       delay++;
       if (delay > 1550) {
         cells[randNums[i]].style.backgroundColor = getRandomColor();
@@ -265,16 +300,16 @@ const gameLogicController = (function () {
     if (board.isEndGame()) {
       if (board.isWin()) {
         if (currentPlayer === aiPlayer) {
-          updateRecord(1,Human);
-          updateRecord(0,CPU);
+          updateRecord(1, Human);
+          updateRecord(0, CPU);
           setTimeout(function () {
             alert("You lost. Would you like to play again?");
             window.location = window.location;
             gameSetup();
           }, 10);
         } else {
-          updateRecord(0,Human);
-          updateRecord(1,CPU);
+          updateRecord(0, Human);
+          updateRecord(1, CPU);
           setTimeout(function () {
             alert("You won. Would you like to play again?");
             window.location = window.location;
@@ -282,8 +317,8 @@ const gameLogicController = (function () {
           }, 10);
         }
       } else {
-        updateRecord(2,Human);
-        updateRecord(2,CPU);
+        updateRecord(2, Human);
+        updateRecord(2, CPU);
         setTimeout(function () {
           alert(
             "Game Over. No More Spaces Left. Would you like to play again?"
@@ -515,7 +550,9 @@ function buildUI(playerOne, playerTwo) {
     const playerName = document.createElement("div");
     const playerAvatar = document.createElement("img");
     const playerRecord = document.createElement("div");
-    const recordArray = JSON.parse(window.localStorage.getItem(`${player.userName}`));
+    const recordArray = JSON.parse(
+      window.localStorage.getItem(`${player.userName}`)
+    );
     playerName.textContent = player.userName;
     playerRecord.textContent =
       recordArray[0] + " - " + recordArray[1] + " - " + recordArray[2];
@@ -552,12 +589,12 @@ function createUser(userName, avatar, record) {
 //------------------------------------
 // User storage array + Local Storage
 //------------------------------------
-function updateRecord(result,player) {
+function updateRecord(result, player) {
   let json = window.localStorage.getItem(`${player.userName}`);
   let record;
   if (json) {
     record = JSON.parse(json);
-    console.log(record[0])
+    console.log(record[0]);
     record[result] += 1;
   } else {
     record = [0, 0, 0];
@@ -573,26 +610,19 @@ function setInitialRecord(player) {
     record = JSON.parse(json);
   } else {
     record = [0, 0, 0];
-  }  
+  }
   player.record = record;
-  
- 
-
   window.localStorage.setItem(`${player.userName}`, JSON.stringify(record));
 }
 
-
-let initRecord = [0,0,0];
-const Human = createUser("Human", "/images/avatar.png", '');
-const CPU = createUser("CPU", "/images/avatar.png", '');
+const Human = createUser("Human", "/images/avatar.png", "");
+const CPU = createUser("CPU", "/images/avatar.png", "");
 
 setInitialRecord(Human);
 setInitialRecord(CPU);
 
-
-
-
 buildUI(Human, CPU);
+preGameAnimations.changeColor();
 
 //---------------------------
 //  Module References
@@ -627,4 +657,7 @@ buildUI(Human, CPU);
 //         setSquare
 //         clone
 //         getAvailablePositions
+//  ----gameLogicController----
+//         aiPlaying
+//         aiPlayerPLAYPLAY
 //---------------------------

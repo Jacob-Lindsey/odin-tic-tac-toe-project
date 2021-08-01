@@ -164,7 +164,7 @@ header {
 }
 #playerTwo {
   margin-left: 10px;
-  visibility: visible;
+  visibility: hidden;
 }
 
 #playerOne,
@@ -179,7 +179,7 @@ header {
 }
 
 .replace {
-  visibility: hidden;
+  visibility: visible;
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -311,7 +311,7 @@ header {
 .choose-ai-opponent {
   display: flex;
   position: absolute;
-  visibility: hidden;
+  visibility: visible;
   flex-direction: column;
   flex: 1;
 }
