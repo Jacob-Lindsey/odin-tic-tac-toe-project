@@ -1,28 +1,47 @@
 //-----------------------
-// UI Element References
+// DOM Element References
 //-----------------------
-const aiCharacters = document.getElementById("choose-ai-opponent");
-const boardFill = ["X", "X", "O", "X", "O", "X", "O", "X", "O"];
-const cb = document.getElementsByTagName("input");
-const cells = document.getElementsByClassName("cell-content");
-const chooseAI = document.getElementById("radio-two");
-const choosePVP = document.getElementById("radio-one");
-const loginButton = document.querySelector(".login");
-const loginCard = document.getElementById("login");
-const loginClose = document.querySelector(".close-button");
-const loginOverlay = document.getElementById("login-overlay");
-const modal = document.getElementById("new-game-modal");
-const modalClose = document.querySelector(".close");
-const modalOverlay = document.getElementById("modal-overlay");
-const newGameButton = document.getElementById("new-game-button");
-const playerOneInput = document.getElementById("playerOne");
-const playerTwoInput = document.getElementById("playerTwo");
-const replayButton = document.querySelector(".replay");
-const applyButton = document.querySelector(".submit");
+const displayElement = (function () {
+  const aiCharacters = document.getElementById("choose-ai-opponent");
+  const boardFill = ["X", "X", "O", "X", "O", "X", "O", "X", "O"];
+  const cb = document.getElementsByTagName("input");
+  const cells = document.getElementsByClassName("cell-content");
+  const chooseAI = document.getElementById("radio-two");
+  const choosePVP = document.getElementById("radio-one");
+  const loginButton = document.querySelector(".login");
+  const loginCard = document.getElementById("login");
+  const loginClose = document.querySelector(".close-button");
+  const loginOverlay = document.getElementById("login-overlay");
+  const modal = document.getElementById("new-game-modal");
+  const modalClose = document.querySelector(".close");
+  const modalOverlay = document.getElementById("modal-overlay");
+  const newGameButton = document.getElementById("new-game-button");
+  const playerOneInput = document.getElementById("playerOne");
+  const playerTwoInput = document.getElementById("playerTwo");
+  const replayButton = document.querySelector(".replay");
+  const applyButton = document.querySelector(".submit");
 
-//----------------------------------------
-// Game Board Element Specific References
-//----------------------------------------
+  return {
+    aiCharacters,
+    boardFill,
+    cb,
+    cells,
+    chooseAI,
+    choosePVP,
+    loginButton,
+    loginCard,
+    loginClose,
+    loginOverlay,
+    modal,
+    modalClose,
+    modalOverlay,
+    newGameButton,
+    playerOneInput,
+    playerTwoInput,
+    replayButton,
+    applyButton,
+  };
+})();
 
 //------------------------------------------------
 // Returns Functionality Methods For UI Components
@@ -31,52 +50,52 @@ const displayController = (function () {
   let userOpponentChoice;
 
   function closeMenu() {
-    modal.style.display = "none";
-    modalOverlay.classList.add("hide");
+    displayElement.modal.style.display = "none";
+    displayElement.modalOverlay.classList.add("hide");
   }
   function openMenu() {
-    modal.style.display = "flex";
-    modalOverlay.classList.remove("hide");
+    displayElement.modal.style.display = "flex";
+    displayElement.modalOverlay.classList.remove("hide");
   }
   function closeLogin() {
-    loginOverlay.classList.add("hide");
-    loginCard.classList.add("hide");
+    displayElement.loginOverlay.classList.add("hide");
+    displayElement.loginCard.classList.add("hide");
   }
   function openLogin() {
-    loginOverlay.classList.remove("hide");
-    loginCard.classList.remove("hide");
+    displayElement.loginOverlay.classList.remove("hide");
+    displayElement.loginCard.classList.remove("hide");
   }
   function toggle_PVP() {
     userOpponentChoice = "pvp";
-    playerTwoInput.style.visibility = "visible";
-    aiCharacters.style.visibility = "hidden";
+    displayElement.playerTwoInput.style.visibility = "visible";
+    displayElement.aiCharacters.style.visibility = "hidden";
     gameLogicController.aiPlaying = false;
   }
   function toggle_AI() {
     userOpponentChoice = "ai";
-    playerTwoInput.style.visibility = "hidden";
-    aiCharacters.style.visibility = "visible";
+    displayElement.playerTwoInput.style.visibility = "hidden";
+    displayElement.aiCharacters.style.visibility = "visible";
     gameLogicController.aiPlaying = true;
   }
   function boardAnimation(arr, index) {
     if (index === arr.length) return;
-    cells[index].textContent = arr[index];
+    displayElement.cells[index].textContent = arr[index];
     setTimeout(boardAnimation, 100, arr, index + 1);
   }
   function registerUser() {
     if (!gameLogicController.aiPlaying) {
-      if (playerTwoInput.value != "") {
-        const playerTwo = playerTwoInput.value;
+      if (displayElement.playerTwoInput.value != "") {
+        const playerTwo = displayElement.playerTwoInput.value;
         createUser(`${playerTwo}`, "/images/avatar.png", "");
-        setInitialRecord(`${playerTwo}`);
+        winLossRecord.setInitialRecord(`${playerTwo}`);
       } else {
         alert("Please enter Player 2's name.");
       }
     }
-    if (playerOneInput.value != "") {
-      const playerOne = playerOneInput.value;
+    if (displayElement.playerOneInput.value != "") {
+      const playerOne = displayElement.playerOneInput.value;
       createUser(`${playerOne}`, "/images/avatar.png", "");
-      setInitialRecord(`${playerOne}`);
+      winLossRecord.setInitialRecord(`${playerOne}`);
     } else {
       alert("Please enter Player 1's name.");
     }
@@ -94,64 +113,69 @@ const displayController = (function () {
   };
 })();
 
-//----------------------------------------------------------------------------------
-// Allows user to close New Game Modal or Login Card by clicking outside of element
-//----------------------------------------------------------------------------------
-loginButton.addEventListener("click", function () {
-  displayController.openLogin();
-  displayController.closeMenu();
-});
-loginClose.addEventListener("click", function () {
-  displayController.closeLogin();
-});
-loginOverlay.addEventListener("click", function () {
-  displayController.closeLogin();
-});
-modalClose.addEventListener("click", function () {
-  displayController.closeMenu();
-});
-modalOverlay.addEventListener("click", function () {
-  displayController.closeMenu();
-});
-newGameButton.addEventListener("click", function () {
-  displayController.openMenu();
-  displayController.closeLogin();
-});
 
-//-----------------------------------------------
-// Open menu with "N" - Close menu with 'Escape'
-//-----------------------------------------------
-window.addEventListener("keydown", function (event) {
-  if (event.key == "Escape") {
+const UIeventListeners = (function () {
+  //----------------------------------------------------------------------------------
+  // Allows user to close New Game Modal or Login Card by clicking outside of element
+  //----------------------------------------------------------------------------------
+
+  displayElement.loginButton.addEventListener("click", function () {
+    displayController.openLogin();
     displayController.closeMenu();
+  });
+  displayElement.loginClose.addEventListener("click", function () {
     displayController.closeLogin();
-  }
-  if (event.key == "n") {
+  });
+  displayElement.loginOverlay.addEventListener("click", function () {
+    displayController.closeLogin();
+  });
+  displayElement.modalClose.addEventListener("click", function () {
+    displayController.closeMenu();
+  });
+  displayElement.modalOverlay.addEventListener("click", function () {
+    displayController.closeMenu();
+  });
+  displayElement.newGameButton.addEventListener("click", function () {
     displayController.openMenu();
-  }
-});
+    displayController.closeLogin();
+  });
 
-//---------------------------------------------------
-// Toggles the opponent selection between PvP and AI
-//---------------------------------------------------
-choosePVP.addEventListener("click", function () {
-  displayController.toggle_PVP();
-});
-chooseAI.addEventListener("click", function () {
-  displayController.toggle_AI();
-});
+  //-----------------------------------------------
+  // Open menu with "N" - Close menu with 'Escape'
+  //-----------------------------------------------
+  window.addEventListener("keydown", function (event) {
+    if (event.key == "Escape") {
+      displayController.closeMenu();
+      displayController.closeLogin();
+    }
+    if (event.key == "n") {
+      displayController.openMenu();
+    }
+  });
 
-window.addEventListener("keydown", function (event) {
-  if (event.key == "p") {
+  //---------------------------------------------------
+  // Toggles the opponent selection between PvP and AI
+  //---------------------------------------------------
+  displayElement.choosePVP.addEventListener("click", function () {
+    displayController.toggle_PVP();
+  });
+  displayElement.chooseAI.addEventListener("click", function () {
+    displayController.toggle_AI();
+  });
+
+  window.addEventListener("keydown", function (event) {
+    if (event.key == "p") {
+      playGame();
+    }
+  });
+  displayElement.replayButton.addEventListener("click", function () {
     playGame();
-  }
-});
-replayButton.addEventListener("click", function () {
-  playGame();
-});
-applyButton.addEventListener("click", function () {
-  displayController.registerUser();
-});
+  });
+  displayElement.applyButton.addEventListener("click", function () {
+    displayController.registerUser();
+  });
+})();
+
 
 //---------------------
 // Pre-Game Animations
@@ -163,9 +187,9 @@ const preGameAnimations = (function () {
   let flag = true;
   const randNums = generateRandomNumbers();
   function changeColor() {
-    replayButton.addEventListener('click', () => {
+    displayElement.replayButton.addEventListener("click", () => {
       flag = false;
-    })
+    });
     for (let i = 0; i < randNums.length; i++) {
       if (flag == false) {
         for (let i = 0; i < cells.length; i++) {
@@ -240,31 +264,17 @@ function gameSetup() {
       gameLogicController.squareClicked(event.target.id);
     }
   });
-  /* preGameAnimations.changeColor(); */
 }
 
-function clearBoard() {
-  for (let i = 0; i < cells.length; i++) {
-    cells[i].textContent = "";
+//------------------
+// Used for testing
+//------------------
+/* function clearBoard() {
+  for (let i = 0; i < displayElement.length; i++) {
+    displayElement.cells[i].textContent = "";
   }
-}
+} */
 
-//----------
-// New Game
-//----------
-const newGame = (function () {
-  // RUN GAME INSTANCE IN A WHILE LOOP => WHILE GAME ARRAY IS LESS THAN 9...
-
-  function _privateMethod() {
-    console.log(_privateProperty);
-  }
-
-  return {
-    publicMethod: function () {
-      _privateMethod();
-    },
-  };
-})();
 
 //------------
 // Game Logic
@@ -300,16 +310,16 @@ const gameLogicController = (function () {
     if (board.isEndGame()) {
       if (board.isWin()) {
         if (currentPlayer === aiPlayer) {
-          updateRecord(1, Human);
-          updateRecord(0, CPU);
+          winLossRecord.updateRecord(1, Human);
+          winLossRecord.updateRecord(0, CPU);
           setTimeout(function () {
             alert("You lost. Would you like to play again?");
             window.location = window.location;
             gameSetup();
           }, 10);
         } else {
-          updateRecord(0, Human);
-          updateRecord(1, CPU);
+          winLossRecord.updateRecord(0, Human);
+          winLossRecord.updateRecord(1, CPU);
           setTimeout(function () {
             alert("You won. Would you like to play again?");
             window.location = window.location;
@@ -317,8 +327,8 @@ const gameLogicController = (function () {
           }, 10);
         }
       } else {
-        updateRecord(2, Human);
-        updateRecord(2, CPU);
+        winLossRecord.updateRecord(2, Human);
+        winLossRecord.updateRecord(2, CPU);
         setTimeout(function () {
           alert(
             "Game Over. No More Spaces Left. Would you like to play again?"
@@ -515,7 +525,6 @@ const gameLogicController = (function () {
     };
   }
 
-  // Public GAME object
   return {
     onLoad: onLoad,
     squareClicked: squareClicked,
@@ -525,9 +534,9 @@ const gameLogicController = (function () {
   };
 })();
 
-//--------------------------------
-// Records the Result of the Game
-//--------------------------------
+//------------------------------------------------------------------
+// Records the Result of the Game       ****NOT FUNCTIONAL YET*****
+//------------------------------------------------------------------
 function recordGameResult(playerOne, playerTwo, result) {
   const timeStamp = new Date().getTime();
   return {
@@ -589,40 +598,51 @@ function createUser(userName, avatar, record) {
 //------------------------------------
 // User storage array + Local Storage
 //------------------------------------
-function updateRecord(result, player) {
-  let json = window.localStorage.getItem(`${player.userName}`);
-  let record;
-  if (json) {
-    record = JSON.parse(json);
-    console.log(record[0]);
-    record[result] += 1;
-  } else {
-    record = [0, 0, 0];
+const winLossRecord = (function () {
+  function updateRecord(result, player) {
+    let json = window.localStorage.getItem(`${player.userName}`);
+    let record;
+    if (json) {
+      record = JSON.parse(json);
+      console.log(record[0]);
+      record[result] += 1;
+    } else {
+      record = [0, 0, 0];
+    }
+    player.record = record;
+    window.localStorage.setItem(player.userName, JSON.stringify(record));
   }
-  player.record = record;
-  window.localStorage.setItem(player.userName, JSON.stringify(record));
-}
-
-function setInitialRecord(player) {
-  let json = window.localStorage.getItem(`${player.userName}`);
-  let record;
-  if (json) {
-    record = JSON.parse(json);
-  } else {
-    record = [0, 0, 0];
+  
+  function setInitialRecord(player) {
+    let json = window.localStorage.getItem(`${player.userName}`);
+    let record;
+    if (json) {
+      record = JSON.parse(json);
+    } else {
+      record = [0, 0, 0];
+    }
+    player.record = record;
+    window.localStorage.setItem(`${player.userName}`, JSON.stringify(record));
   }
-  player.record = record;
-  window.localStorage.setItem(`${player.userName}`, JSON.stringify(record));
-}
+  
+  return {
+    updateRecord: updateRecord,
+    setInitialRecord: setInitialRecord,
+  };
+})();
 
+//------------------------------------------------------
+// Default User Objects and Initializations for Testing 
+//------------------------------------------------------
 const Human = createUser("Human", "/images/avatar.png", "");
 const CPU = createUser("CPU", "/images/avatar.png", "");
 
-setInitialRecord(Human);
-setInitialRecord(CPU);
+winLossRecord.setInitialRecord(Human);
+winLossRecord.setInitialRecord(CPU);
 
 buildUI(Human, CPU);
 preGameAnimations.changeColor();
+
 
 //---------------------------
 //  Module References
@@ -644,9 +664,31 @@ preGameAnimations.changeColor();
 //         squareClicked
 //    ------constr------
 //         getSquares
+//    ----winLossRecord----
+//         updateRecord
+//       setInitialRecord
 //---------------------------
 //---------------------------
 //  Public-Scoped Variables:
+// ------displayElement------
+//         aiCharacters
+//         boardFill
+//         cb
+//         cells
+//         chooseAI
+//         choosePVP
+//         loginButton
+//         loginCard
+//         loginClose
+//         loginOverlay
+//         modal
+//         modalClose
+//         modalOverlay
+//         newGameButton
+//         playerOneInput
+//         playerTwoInput
+//         replayButton
+//         applyButton
 //    ---preGameAnimations---
 //         randNums
 //         cells
@@ -657,7 +699,7 @@ preGameAnimations.changeColor();
 //         setSquare
 //         clone
 //         getAvailablePositions
-//  ----gameLogicController----
+//   ---gameLogicController---
 //         aiPlaying
 //         aiPlayerPLAYPLAY
 //---------------------------
