@@ -558,13 +558,13 @@ function buildUI(playerOne, playerTwo) {
     const playerContainer = document.createElement("div");
     const playerName = document.createElement("div");
     const playerAvatar = document.createElement("img");
-    const playerRecord = document.createElement("div");
-    const recordArray = JSON.parse(
-      window.localStorage.getItem(`${player.userName}`)
-    );
+    // const playerRecord = document.createElement("div");
+    // const recordArray = JSON.parse(
+    //   window.localStorage.getItem(`${player.userName}`)
+    // );
     playerName.textContent = player.userName;
-    playerRecord.textContent =
-      recordArray[0] + " - " + recordArray[1] + " - " + recordArray[2];
+    // playerRecord.textContent =
+    //   recordArray[0] + " - " + recordArray[1] + " - " + recordArray[2];
     playerContainer.classList.add("player-container");
     playerName.classList.add("player-name");
     if (side == "left") {
@@ -574,10 +574,10 @@ function buildUI(playerOne, playerTwo) {
     }
     playerAvatar.classList.add("player-avatar");
     playerAvatar.src = `${player.avatar}`;
-    playerRecord.classList.add("player-record");
+    // playerRecord.classList.add("player-record");
     playerContainer.appendChild(playerName);
     playerContainer.appendChild(playerAvatar);
-    playerContainer.appendChild(playerRecord);
+    // playerContainer.appendChild(playerRecord);
     return playerContainer;
   }
   playerOneDisplay.appendChild(createElements(playerOne, "left"));
@@ -587,16 +587,15 @@ function buildUI(playerOne, playerTwo) {
 //---------------------------
 // Returns A New User Object
 //---------------------------
-function createUser(userName, avatar, record) {
+function createUser(userName, avatar) {
   return {
     userName: userName,
     avatar: avatar,
-    record: record,
   };
 }
 
 //------------------------------------
-// User storage array + Local Storage
+// User storage array + Local Storage - *** IN PROGRESS ***
 //------------------------------------
 const winLossRecord = (function () {
   function updateRecord(result, player) {
@@ -634,11 +633,12 @@ const winLossRecord = (function () {
 //------------------------------------------------------
 // Default User Objects and Initializations for Testing 
 //------------------------------------------------------
-const Human = createUser("Human", "/images/avatar.png", "");
+const Human = createUser(prompt("Enter your name."), "/images/avatar.png", "");
 const CPU = createUser("CPU", "/images/avatar.png", "");
 
-winLossRecord.setInitialRecord(Human);
-winLossRecord.setInitialRecord(CPU);
+
+// winLossRecord.setInitialRecord(Human);
+// winLossRecord.setInitialRecord(CPU);
 
 buildUI(Human, CPU);
 preGameAnimations.changeColor();
