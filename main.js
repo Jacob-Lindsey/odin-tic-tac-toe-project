@@ -633,8 +633,8 @@ const winLossRecord = (function () {
 //------------------------------------------------------
 // Default User Objects and Initializations for Testing 
 //------------------------------------------------------
-const Human = createUser(prompt("Enter your name."), "/images/avatar.png", "");
-const CPU = createUser("CPU", "/images/avatar.png", "");
+const Human = createUser(prompt("Enter your name."), "images/avatar.png", "");
+const CPU = createUser("CPU", "images/avatar.png", "");
 
 
 // winLossRecord.setInitialRecord(Human);
